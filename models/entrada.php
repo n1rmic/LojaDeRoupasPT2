@@ -29,7 +29,7 @@ class Entrada
             ) AS produtos_nomes
         FROM entrada_mercadoria em
         INNER JOIN fornecedor f ON f.id = em.fornecedor_id
-        LEFT JOIN movimento_estoque me ON me.origem_id = em.id AND me.origem = 'entrada_mercadoria'
+        LEFT JOIN movimento_estoque me ON me.origem_id = em.id AND me.origem = 'entrada'
         LEFT JOIN variacao v ON v.id = me.variacao_id
         LEFT JOIN produto p ON p.id = v.produto_id
         GROUP BY em.id, em.data, em.status, em.valor_total, f.nome
@@ -86,7 +86,7 @@ class Entrada
  
             $stmtMov = $this->conn->prepare("
                 INSERT INTO movimento_estoque (variacao_id, tipo, quantidade, origem, origem_id, data)
-                VALUES (:variacao_id, 'entrada', :quantidade, 'entrada_mercadoria', :origem_id, NOW())
+                VALUES (:variacao_id, 'entrada', :quantidade, 'entrada', :origem_id, NOW())
             ");
  
             foreach ($itens as $item) {

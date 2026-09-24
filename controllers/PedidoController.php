@@ -20,45 +20,94 @@ class PedidoController extends SiteBaseController
         }
 
         $cliente = (new ClienteSite())->buscarPorCpf($this->clienteCpf());
-        $endereco = $_SESSION['checkout_endereco'] ?? $cliente['endereco'];
 
         $this->render('checkout', [
             'carrinho' => $carrinho,
             'cliente'  => $cliente,
-            'endereco' => $endereco,
+            'old'      => [],
             'erro'     => '',
         ], 'Finalizar compra');
     }
 
-    /** POST: endereco */
-    public function confirmar(): void
+    /** POST: recebe o endereço, valida e mostra a escolha de pagamento */
+    public function pagamento(): void
     {
         $this->exigirLogin();
         $this->exigirPost(url('pedido', 'checkout'));
 
-        $endereco = trim((string) ($_POST['endereco'] ?? ''));
-        $carrinho = new Carrinho();
+        $campos = ['cep', 'rua', 'numero', 'complemento', 'bairro', 'cidade', 'uf'];
+        $old = ['endereco_opcao' => $_POST['endereco_opcao'] ?? 'cadastrado'];
+        foreach ($campos as $c) {
+            $old[$c] = trim((string) ($_POST[$c] ?? ''));
+        }
 
+        $carrinho = new Carrinho();
         $avisos = $carrinho->sincronizar();
-        if ($avisos) { // algo mudou (preço/estoque): mostra o resumo atualizado antes de fechar
+        if ($avisos) {
             foreach ($avisos as $a) {
                 flash('aviso', $a);
             }
-            $_SESSION['checkout_endereco'] = $endereco;
-            redirecionar(url('pedido', 'checkout'));
         }
         if ($carrinho->vazio()) {
             redirecionar(url('carrinho', 'index'));
         }
-        if (mb_strlen($endereco) < 10 || mb_strlen($endereco) > 255) {
-            $cliente = (new ClienteSite())->buscarPorCpf($this->clienteCpf());
-            $this->render('checkout', [
-                'carrinho' => $carrinho,
-                'cliente'  => $cliente,
-                'endereco' => $endereco,
-                'erro'     => 'Informe o endereço de entrega completo (10 a 255 caracteres).',
-            ], 'Finalizar compra');
-            return;
+
+        $cliente = (new ClienteSite())->buscarPorCpf($this->clienteCpf());
+
+        if ($old['endereco_opcao'] === 'cadastrado' && !empty($cliente['endereco'])) {
+            $endereco = $cliente['endereco'];
+        } else {
+            $obrigatorios = ['cep', 'rua', 'numero', 'bairro', 'cidade', 'uf'];
+            $faltando = array_filter($obrigatorios, fn($c) => $old[$c] === '');
+            if ($faltando || strlen(somenteDigitos($old['cep'])) !== 8) {
+                $this->render('checkout', [
+                    'carrinho' => $carrinho,
+                    'cliente'  => $cliente,
+                    'old'      => $old,
+                    'erro'     => 'Preencha todos os campos obrigatórios do endereço (CEP com 8 dígitos).',
+                ], 'Finalizar compra');
+                return;
+            }
+
+            $endereco = "{$old['rua']}, {$old['numero']}"
+                . ($old['complemento'] !== '' ? " - {$old['complemento']}" : '')
+                . " - {$old['bairro']}, {$old['cidade']}/{$old['uf']} - CEP " . formatarCep($old['cep']);
+        }
+
+        $_SESSION['checkout_endereco'] = $endereco;
+
+        $this->render('pagamento', [
+            'carrinho' => $carrinho,
+            'erro'     => '',
+        ], 'Forma de pagamento');
+    }
+
+    /** POST: confirma a forma de pagamento e cria o pedido */
+    public function finalizar(): void
+    {
+        $this->exigirLogin();
+        $this->exigirPost(url('pedido', 'checkout'));
+
+        $endereco = $_SESSION['checkout_endereco'] ?? '';
+        $carrinho = new Carrinho();
+        if ($endereco === '' || $carrinho->vazio()) {
+            redirecionar(url('pedido', 'checkout'));
+        }
+
+        $metodo = $_POST['metodo'] ?? '';
+        if ($metodo === 'cartao') {
+            $obrigatorios = ['numero_cartao', 'nome_cartao', 'validade_cartao', 'cvv_cartao'];
+            foreach ($obrigatorios as $c) {
+                if (trim((string) ($_POST[$c] ?? '')) === '') {
+                    $this->render('pagamento', [
+                        'carrinho' => $carrinho,
+                        'erro'     => 'Preencha todos os dados do cartão.',
+                    ], 'Forma de pagamento');
+                    return;
+                }
+            }
+        } elseif ($metodo !== 'pix') {
+            redirecionar(url('pedido', 'checkout'));
         }
 
         try {

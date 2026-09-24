@@ -39,10 +39,41 @@ $descrito = fn(array $lista, string $c) => isset($lista[$c]) ? ' aria-invalid="t
       </div>
 
       <div class="campo">
+        <label for="cep_dados">CEP <span class="campo__opcional">(preenche o endereço abaixo)</span></label>
+        <input id="cep_dados" type="text" inputmode="numeric" maxlength="9" placeholder="00000-000">
+        <span class="campo__ajuda" id="cep_dados-status"></span>
+      </div>
+
+      <div class="campo">
         <label for="endereco">Endereço</label>
         <textarea id="endereco" name="endereco" rows="3" maxlength="255" required<?= $descrito($erros, 'endereco') ?>><?= e($old['endereco']) ?></textarea>
         <?= $erroCampo($erros, 'endereco') ?>
       </div>
+
+      <script>
+      (function () {
+        var cep = document.getElementById('cep_dados');
+        var status = document.getElementById('cep_dados-status');
+        var endereco = document.getElementById('endereco');
+        cep.addEventListener('input', function () {
+          cep.value = cep.value.replace(/\D/g, '').slice(0, 8).replace(/^(\d{5})(\d)/, '$1-$2');
+        });
+        cep.addEventListener('blur', function () {
+          var digitos = cep.value.replace(/\D/g, '');
+          if (digitos.length !== 8) return;
+          status.textContent = 'Buscando endereço...';
+          fetch('index.php?controller=cep&action=buscar&cep=' + digitos)
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (d.erro) { status.textContent = d.erro; return; }
+              endereco.value = [d.logradouro, d.bairro, d.cidade + '/' + d.estado, 'CEP ' + d.cep]
+                .filter(Boolean).join(', ');
+              status.textContent = 'Endereço preenchido. Complete com número e complemento.';
+            })
+            .catch(function () { status.textContent = 'Não foi possível consultar o CEP agora.'; });
+        });
+      })();
+      </script>
 
       <button type="submit" class="botao botao--primario">Salvar alterações</button>
     </form>

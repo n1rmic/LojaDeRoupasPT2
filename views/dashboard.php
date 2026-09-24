@@ -45,7 +45,8 @@ Escolha um módulo para continuar.
   <a href="/loja_roupas/index.php?controller=entrada&action=index">Entradas</a>
   <a href="/loja_roupas/index.php?controller=venda&action=index">Vendas</a>
   <a href="/loja_roupas/index.php?controller=relatorio&action=index">Relatórios</a>
-
+  <a href="/loja_roupas/index.php?controller=loja&action=index" target="_blank" rel="noopener">🛒 Visitar o site</a>
+</div>
 
 
 

@@ -83,6 +83,12 @@ function formatarCpf(string $cpf): string
     return substr($cpf, 0, 3) . '.' . substr($cpf, 3, 3) . '.' . substr($cpf, 6, 3) . '-' . substr($cpf, 9, 2);
 }
 
+function formatarCep(string $cep): string
+{
+    $cep = somenteDigitos($cep);
+    return strlen($cep) === 8 ? substr($cep, 0, 5) . '-' . substr($cep, 5) : $cep;
+}
+
 function formatarTelefone(?string $telefone): string
 {
     $t = somenteDigitos((string) $telefone);

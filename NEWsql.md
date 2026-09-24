@@ -52,3 +52,8 @@ Gere o `ALTER`/`CREATE TABLE` em um arquivo `.sql` separado (ex: `cliente_site.s
 
 
 
+ALTER TABLE pedido
+  ADD COLUMN cep_entrega VARCHAR(9) NULL AFTER endereco_entrega,
+  ADD COLUMN valor_frete DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER cep_entrega,
+  ADD COLUMN prazo_frete_dias INT NULL AFTER valor_frete,
+  ADD COLUMN forma_pagamento ENUM('pix','cartao','boleto') NOT NULL DEFAULT 'pix' AFTER prazo_frete_dias;

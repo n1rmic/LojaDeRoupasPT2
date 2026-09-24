@@ -90,7 +90,7 @@ $nomeUser = $_SESSION['nome'] ?? 'Usuário';
     <h2>Últimas Entradas</h2>
     <table class="table">
       <thead>
-        <tr><th>ID</th><th>Fornecedor</th><th>Data</th><th>Status</th><th>Valor Total</th></tr>
+
       </thead>
       <tbody>
         <?php foreach ($entradas as $e): ?>
@@ -99,6 +99,7 @@ $nomeUser = $_SESSION['nome'] ?? 'Usuário';
           <td><?= htmlspecialchars($e['fornecedor_nome']) ?></td>
           <td><?= htmlspecialchars($e['data']) ?></td>
           <td><?= htmlspecialchars($e['status']) ?></td>
+                   <td style="text-align:center;"><?= (int) $e['total_quantidade'] ?></td>
           <td>R$ <?= number_format((float)$e['valor_total'], 2, ',', '.') ?></td>
         </tr>
         <?php endforeach; ?>

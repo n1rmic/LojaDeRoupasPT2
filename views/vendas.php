@@ -136,6 +136,15 @@ $nomeUser = $_SESSION['nome'] ?? 'Vendedor';
       <div class="card">
         <h2>1. Identificação & Itens</h2>
         
+                <div class="form-group">
+          <label for="busca-cpf-cliente">Buscar cliente pelo CPF</label>
+          <div style="display:flex; gap:8px;">
+            <input class="input" type="text" id="busca-cpf-cliente" placeholder="Somente números" maxlength="14" inputmode="numeric">
+            <button type="button" class="btn" id="btn-buscar-cpf">Buscar</button>
+          </div>
+          <small id="msg-busca-cpf" style="display:block; margin-top:4px;"></small>
+        </div>
+
         <div class="form-group">
           <label>Cliente Comprador</label>
           <select class="input" name="cliente_id" required>
@@ -364,5 +373,49 @@ document.addEventListener('DOMContentLoaded', function () {
   recalcularTotais();
 });
 </script>
+<script>
+document.getElementById('btn-buscar-cpf').addEventListener('click', async () => {
+  const cpfInput = document.getElementById('busca-cpf-cliente');
+  const msg = document.getElementById('msg-busca-cpf');
+  const cpf = cpfInput.value.replace(/\D/g, '');
+
+  if (cpf.length !== 11) {
+    msg.textContent = 'Informe um CPF com 11 dígitos.';
+    msg.style.color = '#ff5c5c';
+    return;
+  }
+
+  msg.textContent = 'Buscando...';
+  msg.style.color = 'inherit';
+
+  try {
+    const resp = await fetch(`index.php?controller=venda&action=buscarClientePorCpf&cpf=${cpf}`);
+    const dados = await resp.json();
+    const select = document.querySelector('select[name="cliente_id"]');
+
+    if (!dados.encontrado) {
+      msg.textContent = dados.mensagem || 'Cliente não encontrado. Use Cliente Balcao.';
+      msg.style.color = '#ff5c5c';
+      return;
+    }
+
+    let opcao = select.querySelector(`option[value="${dados.id}"]`);
+    if (!opcao) {
+      opcao = document.createElement('option');
+      opcao.value = dados.id;
+      select.appendChild(opcao);
+    }
+    opcao.textContent = dados.nome;
+    select.value = dados.id;
+
+    msg.textContent = `Cliente encontrado: ${dados.nome}`;
+    msg.style.color = '#7cff00';
+  } catch (e) {
+    msg.textContent = 'Erro ao buscar cliente.';
+    msg.style.color = '#ff5c5c';
+  }
+});
+</script>
+
 </body>
 </html>

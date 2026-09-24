@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/Venda.php';
-
+require_once __DIR__ . '/../models/cliente.php';
 class VendaController
 {
     public function index(): void
@@ -143,4 +143,37 @@ class VendaController
             exit;
         }
     }
+
+/** GET (AJAX): cpf -> JSON. Busca em `cliente`; se não achar, tenta puxar de `cliente_site`. */
+public function buscarClientePorCpf(): void
+{
+    $this->check();
+    header('Content-Type: application/json; charset=utf-8');
+
+    $cpf = preg_replace('/\D+/', '', (string) ($_GET['cpf'] ?? ''));
+    if (strlen($cpf) !== 11) {
+        echo json_encode(['encontrado' => false, 'mensagem' => 'Informe um CPF com 11 dígitos.']);
+        exit;
+    }
+
+    $clienteModel = new Cliente();
+    $cliente = $clienteModel->buscarPorCpf($cpf);
+
+    if (!$cliente) {
+        require_once __DIR__ . '/../models/ClienteSite.php';
+        $clienteSite = (new ClienteSite())->buscarPorCpf($cpf);
+        if ($clienteSite) {
+            $novoId = $clienteModel->criarAPartirDoSite($clienteSite);
+            $cliente = $clienteModel->buscarPorId($novoId);
+        }
+    }
+
+    if (!$cliente) {
+        echo json_encode(['encontrado' => false, 'mensagem' => 'CPF não encontrado. Use "Cliente Balcao" ou cadastre um cliente novo.']);
+        exit;
+    }
+
+    echo json_encode(['encontrado' => true, 'id' => (int) $cliente['id'], 'nome' => $cliente['nome']]);
+    exit;
+}
 }
