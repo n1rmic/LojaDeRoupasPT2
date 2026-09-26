@@ -14,6 +14,7 @@
     th, td { border: 1px solid #999; padding: 5px 8px; font-size: 12px; }
     th { background: #eee; }
   </style>
+  <link rel="icon" type="image/png" href="public/assets/img/dashboard.png">
 </head>
 <body>
   <h1>Relatório Gerencial — Loja Cosplay</h1>

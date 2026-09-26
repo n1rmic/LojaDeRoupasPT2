@@ -19,6 +19,7 @@ function imagemProdutoUrl(int $produtoId): string
 <head>
     <meta charset="utf-8">
     <title>Produtos</title>
+    <link rel="icon" type="image/png" href="public/assets/img/dashboard.png">
     <link rel="stylesheet" href="public/assets/css/style.css">
 </head>
 

@@ -7,6 +7,7 @@ $nomeUser = $_SESSION['nome'] ?? 'Vendedor';
   <meta charset="utf-8">
   <title>Caixa PDV - Finalizar Venda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="public/assets/img/dashboard.png">
   <link rel="stylesheet" href="/loja_roupas/public/assets/css/style.css">
   <style>
     /* Estilos do Terminal de Caixa (PDV) */

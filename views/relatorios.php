@@ -8,6 +8,7 @@ $nomeUser = $_SESSION['nome'] ?? 'Usuário';
   <title>Relatórios</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Cache busting mantido -->
+  <link rel="icon" type="image/png" href="public/assets/img/dashboard.png">
   <link rel="stylesheet" href="/loja_roupas/public/assets/css/style.css?v=<?= time() ?>">
 </head>
 <body>

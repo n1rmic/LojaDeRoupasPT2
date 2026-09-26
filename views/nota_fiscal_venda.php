@@ -11,6 +11,7 @@ $horaVendaFormatada = date('H:i:s', $timestampVenda);
     <meta charset="utf-8">
     <title>Nota Fiscal de Venda - Nº <?= htmlspecialchars($nota['numero'] ?? $venda['id']) ?></title>
     <link rel="stylesheet" href="/loja_roupas/public/assets/css/nota.css">
+    <link rel="icon" type="image/png" href="public/assets/img/dashboard.png">
     <link rel="stylesheet" href="nota_fiscal.css">
 </head>
 

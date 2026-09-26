@@ -31,6 +31,7 @@
           <p>Entrega em: <?= e($p['endereco_entrega']) ?></p>
           <p class="pedido__total">Total <?= e(moeda($p['valor_total'])) ?></p>
         </footer>
+        <a class="link" href="<?= e(url('pedido', 'verNota', ['id' => $p['id']])) ?>">Ver Nota Fiscal</a>
       </li>
     <?php endforeach; ?>
   </ul>

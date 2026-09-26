@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= e($titulo) ?> — Loja de Cosplay</title>
+ <link rel="icon" type="image/png" href="public/assets/img/site.png">
   <link rel="stylesheet" href="public/assets/css/loja.css">
 </head>
 <body>

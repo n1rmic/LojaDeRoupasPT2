@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
       <link rel="stylesheet" href="public/assets/css/style.css">
-    <title>Cadastrar Vendedor</title>
+   <link rel="icon" type="image/png" href="public/assets/img/dashboard.png">
+      <title>Cadastrar Vendedor</title>
 
 
 </head>

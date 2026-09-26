@@ -139,6 +139,23 @@ class PedidoController extends SiteBaseController
         $this->render('confirmacao', ['pedido' => $pedido], 'Pedido realizado');
     }
 
+    /** index.php?controller=pedido&action=verNota&id=N  (mesma tela da NF-e, com botão Imprimir) */
+    public function verNota(): void
+    {
+        $this->exigirLogin();
+
+        $pedido = (new Pedido())->buscarDoCliente((int) ($_GET['id'] ?? 0), $this->clienteCpf());
+        if (!$pedido) {
+            http_response_code(404);
+            $this->render('nao_encontrado', ['mensagem' => 'Pedido não encontrado.'], 'Pedido não encontrado');
+            return;
+        }
+
+        $cliente = (new ClienteSite())->buscarPorCpf($this->clienteCpf());
+
+        require __DIR__ . '/../views/nota_fiscal_pedido.php';
+    }
+
     /** index.php?controller=pedido&action=meusPedidos */
     public function meusPedidos(): void
     {

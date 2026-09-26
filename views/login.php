@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Login - Loja Cosplay</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="icon" type="image/png" href="public/assets/img/dashboard.png">
     <link rel="stylesheet" href="public/assets/css/style.css">
 </head>
 <body>

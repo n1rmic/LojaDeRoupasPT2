@@ -19,5 +19,6 @@
   <div class="confirmacao__botoes">
     <a class="botao botao--primario" href="<?= e(url('pedido', 'meusPedidos')) ?>">Ver meus pedidos</a>
     <a class="botao botao--secundario" href="<?= e(url('loja', 'index')) ?>">Continuar comprando</a>
+    <a class="botao botao--secundario" href="<?= e(url('pedido', 'verNota', ['id' => $pedido['id']])) ?>">Ver Nota Fiscal</a>
   </div>
 </section>

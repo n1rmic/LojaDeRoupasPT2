@@ -8,6 +8,7 @@ $nomeUser = $_SESSION['nome'] ?? 'Usuário';
   <title>Entradas de Mercadoria</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- O truque do time() mantido para evitar o cache! -->
+  <link rel="icon" type="image/png" href="public/assets/img/dashboard.png">
   <link rel="stylesheet" href="/loja_roupas/public/assets/css/style.css?v=<?= time() ?>">
 </head>
 <body>
